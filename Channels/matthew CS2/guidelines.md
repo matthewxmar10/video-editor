@@ -83,7 +83,12 @@
 - _TBD — none by default; add on request._
 
 ## Transitions & overlays
-- _TBD — keep cuts clean between moments for now; refine from ./references/ clips._
+- **Stream badges (drop-in overlays).** Three standalone transparent clips live in
+  `transitions/badges/out/` — Twitch `recorded live on twitch` (AK + Scythe of Vitur
+  bookends), YouTube `subscribe`, Discord `join the discord`. Self-contained in→hold→out,
+  ProRes 4444 with alpha + baked audio; drag onto the timeline over the gameplay. Rebuild /
+  tweak with `transitions/badges/build_badges.sh` (see `transitions/badges/README.md`).
+- _Otherwise keep cuts clean between moments; refine from ./references/ clips._
 
 ## Music & sound
 - **ALWAYS strip the Spotify/music track — never ship music (copyright).** Matthew's OBS

@@ -11,7 +11,7 @@ const { fontFamily: HEAVY } = loadFont('normal', { weights: ['700', '800'], subs
 // ── brand marks (recreated as inline SVG — no external assets) ──────────────
 const TwitchMark: React.FC = () => (
   <svg viewBox="0 0 2400 2800" width="100%" height="100%">
-    <path fill="#fff" d="M500 0L0 500V2300H600V2800L1100 2300H1500L2400 1400V0H500ZM2200 1300L1800 1700H1400L1050 2050V1700H600V200H2200V1300Z" />
+    <path fill={COLORS.twitch} d="M500 0L0 500V2300H600V2800L1100 2300H1500L2400 1400V0H500ZM2200 1300L1800 1700H1400L1050 2050V1700H600V200H2200V1300Z" />
     <path fill={COLORS.twitch} d="M1700 550H1900V1150H1700V550Z" />
     <path fill={COLORS.twitch} d="M1150 550H1350V1150H1150V550Z" />
   </svg>
