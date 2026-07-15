@@ -1,0 +1,22 @@
+# Word-level alignment for the Core Engine — drives every overlay/cue's timing.
+# Used by scripts/word_align_x.py to produce script/word-timings/<stem>-wx.json.
+#
+# Setup (one time):
+#   python3 -m venv ~/.venvs/whisperx
+#   ~/.venvs/whisperx/bin/pip install -r scripts/requirements-whisperx.txt
+#
+# These are the exact versions this engine was built and verified against (CPU).
+whisperx==3.8.6
+torch==2.8.0
+torchaudio==2.8.0
+ctranslate2==4.8.0
+faster-whisper==1.2.1
+transformers==4.57.6
+numpy==2.4.6
+#
+# Notes:
+# - Python 3.11+ recommended.
+# - CPU-only is fine — word_align_x.py defaults to DEVICE='cpu', compute_type='int8'.
+# - GPU: install the CUDA build of torch/torchaudio for your platform instead,
+#   then run word_align_x.py with --device cuda (see the script's flags).
+# - First run downloads the wav2vec2 alignment model (~hundreds of MB), cached after.

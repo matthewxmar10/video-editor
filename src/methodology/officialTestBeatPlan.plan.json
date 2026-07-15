@@ -1,0 +1,2078 @@
+{
+ "beats": [
+  {
+   "start": 0.0,
+   "dur": 12.13,
+   "style": "open",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 12.13,
+   "dur": 8.7,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 20.83,
+   "dur": 6.0,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 26.83,
+   "dur": 13.5,
+   "style": "glideR",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   },
+   "cap": [
+    {
+     "t": "And",
+     "at": 27.31,
+     "big": false
+    },
+    {
+     "t": "I",
+     "at": 27.65,
+     "big": false
+    },
+    {
+     "t": "think",
+     "at": 27.73,
+     "big": false
+    },
+    {
+     "t": "that",
+     "at": 27.91,
+     "big": false
+    },
+    {
+     "t": "there",
+     "at": 28.03,
+     "big": false
+    },
+    {
+     "t": "are",
+     "at": 28.19,
+     "big": false
+    },
+    {
+     "t": "three",
+     "at": 28.39,
+     "big": false
+    },
+    {
+     "t": "main",
+     "at": 28.68,
+     "big": false
+    },
+    {
+     "t": "reasons",
+     "at": 28.95,
+     "big": false
+    },
+    {
+     "t": "for",
+     "at": 29.36,
+     "big": false
+    },
+    {
+     "t": "it.",
+     "at": 29.64,
+     "big": false
+    },
+    {
+     "t": "And",
+     "at": 29.98,
+     "big": false
+    },
+    {
+     "t": "I'll",
+     "at": 30.06,
+     "big": false
+    },
+    {
+     "t": "dive",
+     "at": 30.2,
+     "big": false
+    },
+    {
+     "t": "into",
+     "at": 30.42,
+     "big": false
+    },
+    {
+     "t": "those",
+     "at": 30.62,
+     "big": false
+    },
+    {
+     "t": "in",
+     "at": 31.06,
+     "big": false
+    },
+    {
+     "t": "this",
+     "at": 31.16,
+     "big": false
+    },
+    {
+     "t": "video,",
+     "at": 31.34,
+     "big": false
+    },
+    {
+     "t": "along",
+     "at": 31.96,
+     "big": false
+    },
+    {
+     "t": "with",
+     "at": 32.2,
+     "big": false
+    },
+    {
+     "t": "some",
+     "at": 32.68,
+     "big": false
+    },
+    {
+     "t": "Pew Research",
+     "at": 32.86,
+     "big": true
+    },
+    {
+     "t": "studies",
+     "at": 33.84,
+     "big": false
+    },
+    {
+     "t": "that",
+     "at": 34.24,
+     "big": false
+    },
+    {
+     "t": "I've",
+     "at": 34.86,
+     "big": false
+    },
+    {
+     "t": "looked",
+     "at": 35.24,
+     "big": false
+    },
+    {
+     "t": "at",
+     "at": 35.58,
+     "big": false
+    },
+    {
+     "t": "and",
+     "at": 35.74,
+     "big": false
+    },
+    {
+     "t": "like",
+     "at": 35.86,
+     "big": false
+    },
+    {
+     "t": "the",
+     "at": 36.16,
+     "big": false
+    },
+    {
+     "t": "data",
+     "at": 36.3,
+     "big": false
+    },
+    {
+     "t": "that",
+     "at": 36.56,
+     "big": false
+    },
+    {
+     "t": "I'm",
+     "at": 36.78,
+     "big": false
+    },
+    {
+     "t": "seeing",
+     "at": 36.98,
+     "big": false
+    },
+    {
+     "t": "and",
+     "at": 37.38,
+     "big": false
+    },
+    {
+     "t": "just",
+     "at": 37.66,
+     "big": false
+    },
+    {
+     "t": "some",
+     "at": 37.98,
+     "big": false
+    },
+    {
+     "t": "anecdotes",
+     "at": 38.28,
+     "big": false
+    },
+    {
+     "t": "from",
+     "at": 39.34,
+     "big": false
+    },
+    {
+     "t": "my",
+     "at": 39.7,
+     "big": false
+    },
+    {
+     "t": "hometown.",
+     "at": 39.88,
+     "big": false
+    }
+   ]
+  },
+  {
+   "start": 40.33,
+   "dur": 10.4,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 50.73,
+   "dur": 8.93,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 59.67,
+   "dur": 6.37,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 66.03,
+   "dur": 7.73,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 73.77,
+   "dur": 10.4,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 84.17,
+   "dur": 7.5,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 91.67,
+   "dur": 4.73,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 96.4,
+   "dur": 10.03,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 106.43,
+   "dur": 13.17,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 119.6,
+   "dur": 8.5,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 128.1,
+   "dur": 11.7,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 139.8,
+   "dur": 13.17,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 152.97,
+   "dur": 6.6,
+   "style": "glideL",
+   "diagram": {
+    "kind": "photo",
+    "stage": "host",
+    "_descriptor": true
+   },
+   "photo": {
+    "img": "photos/alva.png",
+    "at": 156.18,
+    "label": "Alva, Oklahoma"
+   }
+  },
+  {
+   "start": 159.57,
+   "dur": 5.37,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 164.93,
+   "dur": 10.87,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 175.8,
+   "dur": 6.47,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 182.27,
+   "dur": 12.07,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 194.33,
+   "dur": 5.43,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 199.77,
+   "dur": 9.0,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 208.77,
+   "dur": 10.47,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 219.23,
+   "dur": 6.9,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 226.13,
+   "dur": 5.87,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 232.0,
+   "dur": 13.47,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 245.47,
+   "dur": 6.07,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 251.53,
+   "dur": 7.63,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 259.17,
+   "dur": 7.03,
+   "style": "glideR",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   },
+   "cap": [
+    {
+     "t": "And",
+     "at": 259.47,
+     "big": false
+    },
+    {
+     "t": "I",
+     "at": 259.59,
+     "big": false
+    },
+    {
+     "t": "think",
+     "at": 259.67,
+     "big": false
+    },
+    {
+     "t": "that",
+     "at": 259.85,
+     "big": false
+    },
+    {
+     "t": "imposing",
+     "at": 260.21,
+     "big": false
+    },
+    {
+     "t": "your",
+     "at": 260.93,
+     "big": false
+    },
+    {
+     "t": "own",
+     "at": 261.43,
+     "big": false
+    },
+    {
+     "t": "moral",
+     "at": 261.65,
+     "big": false
+    },
+    {
+     "t": "and",
+     "at": 261.95,
+     "big": false
+    },
+    {
+     "t": "religious",
+     "at": 262.04,
+     "big": false
+    },
+    {
+     "t": "beliefs",
+     "at": 262.33,
+     "big": false
+    },
+    {
+     "t": "on",
+     "at": 262.63,
+     "big": false
+    },
+    {
+     "t": "others",
+     "at": 262.82,
+     "big": false
+    },
+    {
+     "t": "is",
+     "at": 263.34,
+     "big": false
+    },
+    {
+     "t": "the",
+     "at": 263.46,
+     "big": false
+    },
+    {
+     "t": "thing",
+     "at": 263.72,
+     "big": false
+    },
+    {
+     "t": "that",
+     "at": 263.88,
+     "big": false
+    },
+    {
+     "t": "infuriates",
+     "at": 264.12,
+     "big": true
+    },
+    {
+     "t": "me",
+     "at": 264.66,
+     "big": false
+    },
+    {
+     "t": "to",
+     "at": 264.84,
+     "big": false
+    },
+    {
+     "t": "no",
+     "at": 265.86,
+     "big": false
+    },
+    {
+     "t": "end.",
+     "at": 266.04,
+     "big": false
+    }
+   ]
+  },
+  {
+   "start": 266.2,
+   "dur": 13.07,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 279.27,
+   "dur": 5.63,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 284.9,
+   "dur": 11.6,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 296.5,
+   "dur": 10.07,
+   "style": "glideL",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   },
+   "cap": [
+    {
+     "t": "But",
+     "at": 296.78,
+     "big": false
+    },
+    {
+     "t": "like",
+     "at": 297.08,
+     "big": false
+    },
+    {
+     "t": "looking",
+     "at": 297.24,
+     "big": false
+    },
+    {
+     "t": "at",
+     "at": 297.6,
+     "big": false
+    },
+    {
+     "t": "the",
+     "at": 297.76,
+     "big": false
+    },
+    {
+     "t": "trends,",
+     "at": 297.98,
+     "big": false
+    },
+    {
+     "t": "we",
+     "at": 298.84,
+     "big": false
+    },
+    {
+     "t": "have",
+     "at": 299.16,
+     "big": false
+    },
+    {
+     "t": "78%",
+     "at": 299.4,
+     "big": false
+    },
+    {
+     "t": "of",
+     "at": 299.48,
+     "big": false
+    },
+    {
+     "t": "the",
+     "at": 299.64,
+     "big": false
+    },
+    {
+     "t": "country",
+     "at": 299.74,
+     "big": false
+    },
+    {
+     "t": "being",
+     "at": 299.96,
+     "big": false
+    },
+    {
+     "t": "Christian",
+     "at": 300.14,
+     "big": true
+    },
+    {
+     "t": "in",
+     "at": 300.52,
+     "big": false
+    },
+    {
+     "t": "2007,",
+     "at": 300.62,
+     "big": false
+    },
+    {
+     "t": "about",
+     "at": 300.74,
+     "big": false
+    },
+    {
+     "t": "71%",
+     "at": 300.9,
+     "big": false
+    },
+    {
+     "t": "in",
+     "at": 301.1,
+     "big": false
+    },
+    {
+     "t": "2014,",
+     "at": 301.18,
+     "big": false
+    },
+    {
+     "t": "down",
+     "at": 301.36,
+     "big": false
+    },
+    {
+     "t": "to",
+     "at": 301.46,
+     "big": false
+    },
+    {
+     "t": "62%",
+     "at": 301.52,
+     "big": false
+    },
+    {
+     "t": "now.",
+     "at": 301.6,
+     "big": false
+    }
+   ]
+  },
+  {
+   "start": 306.57,
+   "dur": 7.33,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 313.9,
+   "dur": 7.63,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 321.53,
+   "dur": 11.0,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 332.53,
+   "dur": 16.6,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 349.13,
+   "dur": 8.6,
+   "style": "glideR",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   },
+   "cap": [
+    {
+     "t": "So",
+     "at": 349.64,
+     "big": false
+    },
+    {
+     "t": "I",
+     "at": 349.92,
+     "big": false
+    },
+    {
+     "t": "think",
+     "at": 350.48,
+     "big": false
+    },
+    {
+     "t": "one",
+     "at": 350.84,
+     "big": false
+    },
+    {
+     "t": "cool",
+     "at": 351.06,
+     "big": false
+    },
+    {
+     "t": "stat",
+     "at": 351.3,
+     "big": false
+    },
+    {
+     "t": "is",
+     "at": 351.66,
+     "big": false
+    },
+    {
+     "t": "that",
+     "at": 351.8,
+     "big": false
+    },
+    {
+     "t": "35%",
+     "at": 352.34,
+     "big": false
+    },
+    {
+     "t": "of",
+     "at": 352.62,
+     "big": false
+    },
+    {
+     "t": "US",
+     "at": 353.14,
+     "big": false
+    },
+    {
+     "t": "adults",
+     "at": 354.28,
+     "big": false
+    },
+    {
+     "t": "have",
+     "at": 355.08,
+     "big": false
+    },
+    {
+     "t": "switched",
+     "at": 355.3,
+     "big": false
+    },
+    {
+     "t": "religion",
+     "at": 355.62,
+     "big": false
+    },
+    {
+     "t": "since",
+     "at": 356.04,
+     "big": false
+    },
+    {
+     "t": "childhood.",
+     "at": 356.3,
+     "big": true
+    },
+    {
+     "t": "I'm",
+     "at": 356.82,
+     "big": false
+    },
+    {
+     "t": "one",
+     "at": 357.06,
+     "big": false
+    },
+    {
+     "t": "of",
+     "at": 357.19,
+     "big": false
+    },
+    {
+     "t": "those.",
+     "at": 357.26,
+     "big": false
+    }
+   ]
+  },
+  {
+   "start": 357.73,
+   "dur": 7.2,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 364.93,
+   "dur": 16.73,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "section",
+    "stage": "host",
+    "_descriptor": true
+   },
+   "section": {
+    "title": "Aging Out",
+    "at": 369.56,
+    "label": "POINT 1"
+   }
+  },
+  {
+   "start": 381.67,
+   "dur": 12.37,
+   "style": "glideL",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   },
+   "cap": [
+    {
+     "t": "So",
+     "at": 382.05,
+     "big": false
+    },
+    {
+     "t": "adults,",
+     "at": 382.87,
+     "big": false
+    },
+    {
+     "t": "Again",
+     "at": 383.81,
+     "big": false
+    },
+    {
+     "t": "looking",
+     "at": 384.01,
+     "big": false
+    },
+    {
+     "t": "at",
+     "at": 384.24,
+     "big": false
+    },
+    {
+     "t": "the",
+     "at": 384.31,
+     "big": false
+    },
+    {
+     "t": "study,",
+     "at": 384.42,
+     "big": false
+    },
+    {
+     "t": "adults",
+     "at": 384.74,
+     "big": false
+    },
+    {
+     "t": "aged",
+     "at": 385.14,
+     "big": false
+    },
+    {
+     "t": "18",
+     "at": 385.5,
+     "big": false
+    },
+    {
+     "t": "to",
+     "at": 385.94,
+     "big": false
+    },
+    {
+     "t": "24,",
+     "at": 386.34,
+     "big": false
+    },
+    {
+     "t": "only",
+     "at": 386.92,
+     "big": false
+    },
+    {
+     "t": "46%",
+     "at": 387.22,
+     "big": false
+    },
+    {
+     "t": "identify as",
+     "at": 387.84,
+     "big": false
+    },
+    {
+     "t": "Christian,",
+     "at": 388.38,
+     "big": false
+    },
+    {
+     "t": "compared",
+     "at": 389.0,
+     "big": false
+    },
+    {
+     "t": "to",
+     "at": 389.32,
+     "big": false
+    },
+    {
+     "t": "80%",
+     "at": 389.44,
+     "big": false
+    },
+    {
+     "t": "of",
+     "at": 390.82,
+     "big": false
+    },
+    {
+     "t": "oldest",
+     "at": 391.0,
+     "big": false
+    },
+    {
+     "t": "adults.",
+     "at": 391.3,
+     "big": false
+    },
+    {
+     "t": "Which",
+     "at": 391.9,
+     "big": false
+    },
+    {
+     "t": "is",
+     "at": 392.06,
+     "big": false
+    },
+    {
+     "t": "like",
+     "at": 392.16,
+     "big": false
+    },
+    {
+     "t": "a",
+     "at": 392.36,
+     "big": false
+    },
+    {
+     "t": "massive,",
+     "at": 392.58,
+     "big": false
+    },
+    {
+     "t": "massive",
+     "at": 393.02,
+     "big": false
+    },
+    {
+     "t": "difference.",
+     "at": 393.38,
+     "big": true
+    }
+   ]
+  },
+  {
+   "start": 394.03,
+   "dur": 6.83,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 400.87,
+   "dur": 12.53,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 413.4,
+   "dur": 5.83,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 419.23,
+   "dur": 9.4,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 428.63,
+   "dur": 7.93,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 436.57,
+   "dur": 8.13,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 444.7,
+   "dur": 7.93,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 452.63,
+   "dur": 8.63,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 461.27,
+   "dur": 7.83,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 469.1,
+   "dur": 8.07,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 477.17,
+   "dur": 13.87,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 491.03,
+   "dur": 4.67,
+   "style": "glideR",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   },
+   "cap": [
+    {
+     "t": "So",
+     "at": 491.51,
+     "big": false
+    },
+    {
+     "t": "it's",
+     "at": 491.83,
+     "big": false
+    },
+    {
+     "t": "more",
+     "at": 491.99,
+     "big": false
+    },
+    {
+     "t": "of,",
+     "at": 492.17,
+     "big": false
+    },
+    {
+     "t": "like,",
+     "at": 492.23,
+     "big": false
+    },
+    {
+     "t": "I",
+     "at": 492.65,
+     "big": false
+    },
+    {
+     "t": "guess,",
+     "at": 492.73,
+     "big": false
+    },
+    {
+     "t": "quiet",
+     "at": 492.99,
+     "big": false
+    },
+    {
+     "t": "quitting,",
+     "at": 493.39,
+     "big": false
+    },
+    {
+     "t": "as",
+     "at": 493.71,
+     "big": false
+    },
+    {
+     "t": "you'd",
+     "at": 493.81,
+     "big": false
+    },
+    {
+     "t": "say",
+     "at": 493.99,
+     "big": false
+    },
+    {
+     "t": "in",
+     "at": 494.21,
+     "big": false
+    },
+    {
+     "t": "the",
+     "at": 494.57,
+     "big": false
+    },
+    {
+     "t": "professional",
+     "at": 494.67,
+     "big": true
+    },
+    {
+     "t": "world.",
+     "at": 495.15,
+     "big": false
+    }
+   ]
+  },
+  {
+   "start": 495.7,
+   "dur": 6.5,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "section",
+    "stage": "host",
+    "_descriptor": true
+   },
+   "section": {
+    "title": "Politics",
+    "at": 496.54,
+    "label": "POINT 2"
+   }
+  },
+  {
+   "start": 502.2,
+   "dur": 13.7,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 515.9,
+   "dur": 20.33,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 536.23,
+   "dur": 6.9,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 543.13,
+   "dur": 9.8,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 552.93,
+   "dur": 5.63,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 558.57,
+   "dur": 5.3,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 563.87,
+   "dur": 14.97,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 578.83,
+   "dur": 8.17,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 587.0,
+   "dur": 5.67,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 592.67,
+   "dur": 15.0,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 607.67,
+   "dur": 12.43,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 620.1,
+   "dur": 10.47,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 630.57,
+   "dur": 9.43,
+   "style": "glideL",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   },
+   "cap": [
+    {
+     "t": "And",
+     "at": 630.98,
+     "big": false
+    },
+    {
+     "t": "for",
+     "at": 631.36,
+     "big": false
+    },
+    {
+     "t": "conservatives,",
+     "at": 631.5,
+     "big": true
+    },
+    {
+     "t": "it",
+     "at": 631.88,
+     "big": false
+    },
+    {
+     "t": "only",
+     "at": 631.96,
+     "big": false
+    },
+    {
+     "t": "fell",
+     "at": 632.08,
+     "big": false
+    },
+    {
+     "t": "for",
+     "at": 632.24,
+     "big": false
+    },
+    {
+     "t": "from,",
+     "at": 632.52,
+     "big": false
+    },
+    {
+     "t": "for",
+     "at": 633.24,
+     "big": false
+    },
+    {
+     "t": "seven",
+     "at": 633.4,
+     "big": false
+    },
+    {
+     "t": "points,",
+     "at": 633.64,
+     "big": false
+    },
+    {
+     "t": "89",
+     "at": 634.06,
+     "big": false
+    },
+    {
+     "t": "to",
+     "at": 634.5,
+     "big": false
+    },
+    {
+     "t": "82.",
+     "at": 634.58,
+     "big": false
+    },
+    {
+     "t": "Which",
+     "at": 635.0,
+     "big": false
+    },
+    {
+     "t": "is",
+     "at": 635.16,
+     "big": false
+    },
+    {
+     "t": "clearly",
+     "at": 635.24,
+     "big": false
+    },
+    {
+     "t": "like",
+     "at": 635.44,
+     "big": false
+    },
+    {
+     "t": "one",
+     "at": 635.86,
+     "big": false
+    },
+    {
+     "t": "side",
+     "at": 636.1,
+     "big": false
+    },
+    {
+     "t": "of",
+     "at": 636.72,
+     "big": false
+    },
+    {
+     "t": "the",
+     "at": 636.92,
+     "big": false
+    },
+    {
+     "t": "political",
+     "at": 637.2,
+     "big": false
+    },
+    {
+     "t": "spectrum",
+     "at": 637.66,
+     "big": false
+    },
+    {
+     "t": "that's",
+     "at": 638.04,
+     "big": false
+    },
+    {
+     "t": "just",
+     "at": 638.36,
+     "big": false
+    },
+    {
+     "t": "dipping",
+     "at": 638.64,
+     "big": false
+    },
+    {
+     "t": "out",
+     "at": 639.09,
+     "big": false
+    },
+    {
+     "t": "on",
+     "at": 639.26,
+     "big": false
+    },
+    {
+     "t": "Christianity.",
+     "at": 639.37,
+     "big": false
+    }
+   ]
+  },
+  {
+   "start": 640.0,
+   "dur": 8.03,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 648.03,
+   "dur": 17.33,
+   "style": "glideR",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   },
+   "cap": [
+    {
+     "t": "About",
+     "at": 648.37,
+     "big": false
+    },
+    {
+     "t": "30%",
+     "at": 648.77,
+     "big": false
+    },
+    {
+     "t": "cited",
+     "at": 649.17,
+     "big": false
+    },
+    {
+     "t": "negative",
+     "at": 649.77,
+     "big": false
+    },
+    {
+     "t": "teachings",
+     "at": 650.57,
+     "big": false
+    },
+    {
+     "t": "or",
+     "at": 651.07,
+     "big": false
+    },
+    {
+     "t": "treatment",
+     "at": 651.25,
+     "big": false
+    },
+    {
+     "t": "of",
+     "at": 651.67,
+     "big": false
+    },
+    {
+     "t": "LGBTQ",
+     "at": 651.91,
+     "big": false
+    },
+    {
+     "t": "plus",
+     "at": 652.45,
+     "big": false
+    },
+    {
+     "t": "people",
+     "at": 652.65,
+     "big": false
+    },
+    {
+     "t": "as",
+     "at": 653.09,
+     "big": false
+    },
+    {
+     "t": "directly",
+     "at": 653.71,
+     "big": false
+    },
+    {
+     "t": "impacting",
+     "at": 654.47,
+     "big": true
+    },
+    {
+     "t": "their",
+     "at": 654.91,
+     "big": false
+    },
+    {
+     "t": "decision",
+     "at": 655.05,
+     "big": false
+    },
+    {
+     "t": "to",
+     "at": 655.63,
+     "big": false
+    },
+    {
+     "t": "leave",
+     "at": 658.45,
+     "big": false
+    },
+    {
+     "t": "the",
+     "at": 662.76,
+     "big": false
+    },
+    {
+     "t": "faith.",
+     "at": 662.88,
+     "big": false
+    },
+    {
+     "t": "That",
+     "at": 663.26,
+     "big": false
+    },
+    {
+     "t": "is",
+     "at": 663.5,
+     "big": false
+    },
+    {
+     "t": "wild,",
+     "at": 663.9,
+     "big": false
+    },
+    {
+     "t": "right.",
+     "at": 664.5,
+     "big": false
+    }
+   ]
+  },
+  {
+   "start": 665.37,
+   "dur": 2.47,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 667.83,
+   "dur": 12.47,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 680.3,
+   "dur": 5.5,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 685.8,
+   "dur": 7.4,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "section",
+    "stage": "host",
+    "_descriptor": true
+   },
+   "section": {
+    "title": "The Internet",
+    "at": 686.51,
+    "label": "POINT 3"
+   }
+  },
+  {
+   "start": 693.2,
+   "dur": 11.37,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 704.57,
+   "dur": 7.03,
+   "style": "glideL",
+   "diagram": {
+    "kind": "photo",
+    "stage": "host",
+    "_descriptor": true
+   },
+   "photo": {
+    "img": "photos/alvastone.png",
+    "at": 707.97,
+    "label": "Alva, Oklahoma"
+   }
+  },
+  {
+   "start": 711.6,
+   "dur": 4.77,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 716.37,
+   "dur": 8.57,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 724.93,
+   "dur": 4.87,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 729.8,
+   "dur": 8.77,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 738.57,
+   "dur": 4.97,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 743.53,
+   "dur": 13.73,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 757.27,
+   "dur": 7.8,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 765.07,
+   "dur": 10.77,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 775.83,
+   "dur": 9.57,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 785.4,
+   "dur": 7.93,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 793.33,
+   "dur": 9.6,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 802.93,
+   "dur": 11.5,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 814.43,
+   "dur": 12.4,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 826.83,
+   "dur": 8.17,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 835.0,
+   "dur": 6.17,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 841.17,
+   "dur": 10.43,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 851.6,
+   "dur": 10.2,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 861.8,
+   "dur": 6.87,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 868.67,
+   "dur": 11.47,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 880.13,
+   "dur": 8.13,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 888.27,
+   "dur": 4.33,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 892.6,
+   "dur": 5.17,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  },
+  {
+   "start": 897.77,
+   "dur": 2.98,
+   "style": "hostZoom",
+   "diagram": {
+    "kind": "host",
+    "stage": "host",
+    "_descriptor": true
+   }
+  }
+ ],
+ "total": 900.75,
+ "wx": "script/word-timings/Skep_Leaving-cut-wx.json",
+ "video": "host/Skep_Leaving-cut.mp4"
+}

@@ -1,0 +1,321 @@
+{
+ "beats": [
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 2
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 3,
+   "anim": "photo",
+   "img": "photos/alva.png",
+   "label": "Alva, Oklahoma",
+   "word": "hometown"
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 2
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 3
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 2
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1,
+   "anim": "section",
+   "title": "Aging Out",
+   "label": "POINT 1",
+   "word": "first"
+  },
+  {
+   "scene": 3
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 2
+  },
+  {
+   "scene": 1,
+   "anim": "section",
+   "title": "Politics",
+   "label": "POINT 2",
+   "word": "second"
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 3
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 2
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1,
+   "anim": "section",
+   "title": "The Internet",
+   "label": "POINT 3",
+   "word": "third"
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 3,
+   "anim": "photo",
+   "img": "photos/alvastone.png",
+   "label": "Alva, Oklahoma",
+   "word": "hometown"
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  }
+ ]
+}

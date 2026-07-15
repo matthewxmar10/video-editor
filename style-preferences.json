@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "_comment": "Your editing style. Bounded knobs ONLY - the engine ignores anything else. Your agent proposes updates after each video; you approve. Laws (silence cuts, always-building, avatar on screen, no pills) are NOT knobs and cannot be changed here.",
+  "scenes": {
+    "allowed": [1, 2, 3],
+    "glide": "either"
+  },
+  "animations": {
+    "banned": []
+  }
+}

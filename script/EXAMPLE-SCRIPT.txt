@@ -1,0 +1,21 @@
+I made this high-retention edit using only Claude and Remotion.
+
+It does 3 important things that will change the way you create content forever.
+
+Number 1, it takes your raw video and cuts out all of the dead spaces, so you never have to do this manually again.
+
+Number 2, it creates a beat map so every spoken word gets paired with a matching visual.
+
+Number 3, it renders the entire video, from motion graphics, transitions, b-roll, and sound effects, into one uploadable mp4.
+
+All of this is done with Claude Code, Remotion, and WhisperX.
+
+Claude Code is the builder, Remotion is the editor, and WhisperX is the listener who perfectly times your sentences.
+
+So once the core engine is installed, you can keep upgrading it with new motion graphics, new styles, and endless customizations.
+
+But what I find most special, is that you'll soon realize how fast you can start building a YouTube channel. Actually, I think you'll find yourself asking one important question.
+
+What if I had multiple YouTube and Instagram channels, some that are even faceless channels, and they all were pointing to one, high-converting offer.
+
+Good question. I wonder how much money you'd make?

@@ -1,0 +1,53 @@
+[
+ {
+  "kind": "document",
+  "description": "A screenshot of a DOCUMENT/ARTICLE the host references — a webpage, news page, wiki page, pricing table, or any screenshot of text you would READ — shown as a hard SPLIT-SCREEN: the article fills one whole side edge-to-edge (no card, border, backdrop, caption, or letterbox) and the host is a full-height camera slice flush to the other edge (no glass/rounded panel), facing into it. This is the plain sibling of `photo` (which is for a real place/thing, with a Ken Burns card). Use `document` for anything textual. Crop the screenshot to roughly the panel shape. Author as {scene:2 or 3, anim:document, img:documents/<file>, word:<spoken cue>, fit?:whole|top}.",
+  "category": "media",
+  "tags": [
+   "document",
+   "article",
+   "news",
+   "wiki",
+   "webpage",
+   "screenshot",
+   "table",
+   "text",
+   "page"
+  ],
+  "scenes": [
+   "glide"
+  ]
+ },
+ {
+  "kind": "photo",
+  "description": "A real photograph in the open glide panel while the host stays on camera — use it to SHOW a real place or thing the host names (a hometown, a building, a landmark). True color, slow Ken Burns push. Author as {scene:2 or 3, anim:photo, img:photos/<file>, label:<optional caption>, word:<spoken cue>}.",
+  "category": "media",
+  "tags": [
+   "photo",
+   "image",
+   "broll",
+   "place",
+   "hometown",
+   "real"
+  ],
+  "scenes": [
+   "glide"
+  ]
+ },
+ {
+  "kind": "section",
+  "description": "A TITLE or really-important line shown by gaussian-blurring the whole camera and overlaying the text DEAD CENTER, important words highlighted with an accent underline (Akatab, lowercase). Just the title — NO subhead/kicker. The host stays on camera, defocused behind it — never a split. Use for a section header (a new point or chapter) or a line that must land big. Author as {scene:1, anim:section, title, word:cue}. For ambient/running text, use the default caption (over-the-shoulder), not this.",
+  "category": "structure",
+  "tags": [
+   "section",
+   "title",
+   "chapter",
+   "point",
+   "important",
+   "headline"
+  ],
+  "scenes": [
+   "host"
+  ]
+ }
+]

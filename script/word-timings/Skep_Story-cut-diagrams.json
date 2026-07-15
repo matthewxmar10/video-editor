@@ -1,0 +1,288 @@
+{
+ "beats": [
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 2,
+   "anim": "photo",
+   "img": "photos/alva.png",
+   "label": "Alva, Oklahoma",
+   "word": "Alva"
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 3
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 2,
+   "anim": "photo",
+   "img": "photos/baptistchurch.jpeg",
+   "label": "First Baptist Church",
+   "word": "Baptist"
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 3,
+   "anim": "photo",
+   "img": "photos/nazarenechurch.png",
+   "label": "Church of the Nazarene",
+   "word": "Nazarene"
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 2,
+   "anim": "photo",
+   "img": "photos/alvahighschool.jpg",
+   "label": "Alva High School",
+   "word": "high"
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 3
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 2
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 3
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 2,
+   "anim": "photo",
+   "img": "photos/alvastone.png",
+   "label": "Alva, Oklahoma",
+   "word": "hometown"
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 3
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 2
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  },
+  {
+   "scene": 1
+  }
+ ]
+}

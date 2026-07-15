@@ -1,0 +1,38 @@
+# ── Rebuildable / installed ────────────────────────────────────────────────
+# Rebuilt on the new machine by first-run setup (npm install + scripts/setup.sh).
+# NEVER commit these — the whisperX venv is macOS/arch-specific and lives in ~ anyway.
+node_modules/
+
+# ── Generated render output & working scratch ──────────────────────────────
+out/
+raw/
+scratch/
+scratch_frames/
+public/host/          # generated host cuts (2GB+ of .mp4)
+*.log
+
+# ── Heavy media (anywhere) ─────────────────────────────────────────────────
+# The engine is the code + channel config; raw footage moves on an SSD, not git.
+*.mp4
+*.mov
+*.mkv
+*.avi
+*.webm
+*.wav
+*.mp3
+*.m4a
+*.aac
+*.flac
+
+# Per-video raw material inside channels (talking head, broll, images).
+# Keep the READMEs so the folder shape survives.
+Channels/*/content/*/broll/
+Channels/*/content/*/images/
+Channels/*/references/*.mp4
+Channels/*/references/*.png
+Channels/*/references/*.jpg
+
+# ── OS / editor cruft ──────────────────────────────────────────────────────
+.DS_Store
+.env
+.env.local

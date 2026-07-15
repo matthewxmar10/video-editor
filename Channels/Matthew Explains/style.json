@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "channel": "Matthew Explains",
+  "_comment": "Bounded engine knobs for this channel (the engine reads these). scenes.allowed = which of [1 full-face, 2 glide-right, 3 glide-left] the picker may use; scenes.glide = left|right|either; animations.banned = pack names never to use. Editorial judgment (mostly-face, when to split, etc.) lives in guidelines.md, not here. Laws are never knobs.",
+  "scenes": { "allowed": [1, 2, 3], "glide": "either" },
+  "animations": { "banned": [] }
+}
