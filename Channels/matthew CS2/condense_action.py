@@ -147,22 +147,26 @@ def measure_lufs(vod, track):
 
 
 def build_stem_audio(expr, mic_t, disc_t, game_t, g_mic, g_disc, g_game, master_makeup, tp_limit):
-    """The approved CS2 stem mix, built on the SAME select expr as the video so every stem is cut
-    identically then re-balanced. Music-free (mic + Discord + game only; never the Master track).
+    """The approved CS2 stem mix. Music-free (mic + Discord + game only; never the Master track).
 
     - mic:     high-pass (rumble) -> compressor (tame the wide, spiky dynamics that were peaking)
                -> static gain to the mic LUFS target. A limiter on the master catches residual peaks.
     - discord: noise gate (so the big make-up gain doesn't amplify idle hiss) -> static gain.
     - game:    static gain (sits underneath as the bed).
-    - master:  sum (no auto-attenuation) -> small make-up -> true-peak limiter. NO loudnorm anywhere,
-               so nothing chases a target and ducks the mix (that was the end-of-clip cut-out bug)."""
-    sel = lambda t: f"[0:a:{t}]aselect='{expr}',asetpts=N/SR/TB"
-    mic = (f"{sel(mic_t)},highpass=f=80,"
+    - master:  sum (no auto-attenuation) -> small make-up -> true-peak limiter -> ONE aselect that cuts
+               the finished mix to the kept clips. NO loudnorm anywhere, so nothing chases a target and
+               ducks the mix (that was the end-of-clip cut-out bug).
+
+    The stems are mixed at full length and cut ONCE at the end, so the clip-list expression appears a
+    single time (not once per stem). Combined with rendering audio in its own ffmpeg pass, that keeps
+    the filtergraph small enough to initialize on modest machines (a big 4x expression OOMed on Windows)."""
+    mic = (f"[0:a:{mic_t}]highpass=f=80,"
            f"acompressor=threshold=-20dB:ratio=3:attack=5:release=150,volume={g_mic:.2f}dB[mic]")
-    disc = f"{sel(disc_t)},agate=threshold=0.0018:range=-18dB,volume={g_disc:.2f}dB[disc]"
-    game = f"{sel(game_t)},volume={g_game:.2f}dB[game]"
+    disc = f"[0:a:{disc_t}]agate=threshold=0.0018:range=-18dB,volume={g_disc:.2f}dB[disc]"
+    game = f"[0:a:{game_t}]volume={g_game:.2f}dB[game]"
     mix = (f"[mic][disc][game]amix=inputs=3:normalize=0:duration=longest,"
-           f"volume={master_makeup:.2f}dB,alimiter=limit={tp_limit}:level=false,aresample=48000[a]")
+           f"volume={master_makeup:.2f}dB,alimiter=limit={tp_limit}:level=false,aresample=48000,"
+           f"aselect='{expr}',asetpts=N/SR/TB[a]")
     return ";".join([mic, disc, game, mix])
 
 
@@ -247,9 +251,8 @@ def main():
 
         expr = "+".join(f"between(t,{s:.3f},{e:.3f})" for s, e in ivals)
         ow, oh = a.out_size.split(",")
-        vf = (f"[0:v:0]select='{expr}',setpts=N/FRAME_RATE/TB,"
-              f"scale={ow}:{oh}:flags=lanczos,fps={a.fps},setsar=1[v]")
 
+        # Build the audio filtergraph (used as its own pass).
         if a.audio_mode == "stems":
             print("measuring stem loudness (mic / Discord / game)...")
             m_mic = measure_lufs(a.vod, a.mic_track)
@@ -264,11 +267,35 @@ def main():
             af = (f"[0:a:{a.audio_track}]aselect='{expr}',asetpts=N/SR/TB,"
                   f"highpass=f=40,volume={a.gain}dB,alimiter=limit=0.9:level=false[a]")
 
-        cmd = ["ffmpeg", "-v", "error", "-stats", "-i", a.vod, "-filter_complex", f"{vf};{af}",
-               "-map", "[v]", "-map", "[a]", "-c:v", "libx264", "-preset", a.preset, "-crf", str(a.crf),
-               "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-ac", "2", a.out, "-y"]
-        print(f"rendering action-condensed game ({a.preset} crf{a.crf}, {a.audio_mode} audio)...")
-        sys.exit(subprocess.run(cmd).returncode)
+        # Render video and audio as SEPARATE ffmpeg passes, then mux. One giant filtergraph doing the
+        # video cut AND all three audio-stem cuts at once OOMs on modest machines (the clip-list
+        # expression ends up in the graph several times); splitting keeps each graph small.
+        out_dir = os.path.dirname(os.path.abspath(a.out))
+        vtmp = os.path.join(out_dir, ".ac_video.tmp.mp4")
+        atmp = os.path.join(out_dir, ".ac_audio.tmp.m4a")
+        vf = (f"[0:v:0]select='{expr}',setpts=N/FRAME_RATE/TB,"
+              f"scale={ow}:{oh}:flags=lanczos,fps={a.fps},setsar=1[v]")
+        vcmd = ["ffmpeg", "-v", "error", "-stats", "-i", a.vod, "-filter_complex", vf, "-map", "[v]",
+                "-an", "-c:v", "libx264", "-preset", a.preset, "-crf", str(a.crf), "-pix_fmt", "yuv420p",
+                vtmp, "-y"]
+        acmd = ["ffmpeg", "-v", "error", "-stats", "-i", a.vod, "-filter_complex", af, "-map", "[a]",
+                "-vn", "-c:a", "aac", "-b:a", "192k", "-ac", "2", atmp, "-y"]
+        muxcmd = ["ffmpeg", "-v", "error", "-i", vtmp, "-i", atmp, "-map", "0:v:0", "-map", "1:a:0",
+                  "-c", "copy", "-shortest", a.out, "-y"]
+        try:
+            print(f"rendering VIDEO ({a.preset} crf{a.crf})...")
+            rc = subprocess.run(vcmd).returncode
+            if rc: sys.exit(rc)
+            print(f"rendering AUDIO ({a.audio_mode} mix)...")
+            rc = subprocess.run(acmd).returncode
+            if rc: sys.exit(rc)
+            print("muxing...")
+            rc = subprocess.run(muxcmd).returncode
+            sys.exit(rc)
+        finally:
+            for f in (vtmp, atmp):
+                try: os.remove(f)
+                except OSError: pass
 
 
 if __name__ == "__main__":
