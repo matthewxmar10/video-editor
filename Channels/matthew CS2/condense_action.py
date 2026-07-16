@@ -146,27 +146,36 @@ def measure_lufs(vod, track):
     raise RuntimeError(f"could not measure loudness of track a:{track}")
 
 
-def build_stem_audio(expr, mic_t, disc_t, game_t, g_mic, g_disc, g_game, master_makeup, tp_limit):
-    """The approved CS2 stem mix. Music-free (mic + Discord + game only; never the Master track).
+def write_concat_list(path, vod, ivals):
+    """Write a concat-demuxer list that keeps only `ivals` of `vod`. The demuxer cuts every segment
+    from the clip list in a text FILE — no filter expression is built, so the filtergraph stays tiny
+    no matter how many clips there are (a 150-term `select` expression fails to allocate on some
+    ffmpeg builds). All streams (video + every audio track) are cut in lockstep, so A/V never drifts."""
+    src = os.path.abspath(vod).replace("\\", "/").replace("'", r"'\''")
+    with open(path, "w", encoding="utf-8") as f:
+        f.write("ffconcat version 1.0\n")
+        for s, e in ivals:
+            f.write(f"file '{src}'\ninpoint {s:.3f}\noutpoint {e:.3f}\n")
+
+
+def build_stem_audio(mic_t, disc_t, game_t, g_mic, g_disc, g_game, master_makeup, tp_limit):
+    """The approved CS2 stem mix, applied to ALREADY-CUT audio (the concat demuxer did the cutting).
+    Music-free (mic + Discord + game only; never the Master track).
 
     - mic:     high-pass (rumble) -> compressor (tame the wide, spiky dynamics that were peaking)
-               -> static gain to the mic LUFS target. A limiter on the master catches residual peaks.
+               -> static gain to the mic LUFS target. The master limiter catches residual peaks.
     - discord: noise gate (so the big make-up gain doesn't amplify idle hiss) -> static gain.
     - game:    static gain (sits underneath as the bed).
-    - master:  sum (no auto-attenuation) -> small make-up -> true-peak limiter -> ONE aselect that cuts
-               the finished mix to the kept clips. NO loudnorm anywhere, so nothing chases a target and
-               ducks the mix (that was the end-of-clip cut-out bug).
+    - master:  sum (no auto-attenuation) -> small make-up -> true-peak limiter. NO loudnorm anywhere,
+               so nothing chases a target and ducks the mix.
 
-    The stems are mixed at full length and cut ONCE at the end, so the clip-list expression appears a
-    single time (not once per stem). Combined with rendering audio in its own ffmpeg pass, that keeps
-    the filtergraph small enough to initialize on modest machines (a big 4x expression OOMed on Windows)."""
+    No aselect/expression here — the graph is a fixed handful of filters regardless of clip count."""
     mic = (f"[0:a:{mic_t}]highpass=f=80,"
            f"acompressor=threshold=-20dB:ratio=3:attack=5:release=150,volume={g_mic:.2f}dB[mic]")
     disc = f"[0:a:{disc_t}]agate=threshold=0.0018:range=-18dB,volume={g_disc:.2f}dB[disc]"
     game = f"[0:a:{game_t}]volume={g_game:.2f}dB[game]"
     mix = (f"[mic][disc][game]amix=inputs=3:normalize=0:duration=longest,"
-           f"volume={master_makeup:.2f}dB,alimiter=limit={tp_limit}:level=false,aresample=48000,"
-           f"aselect='{expr}',asetpts=N/SR/TB[a]")
+           f"volume={master_makeup:.2f}dB,alimiter=limit={tp_limit}:level=false,aresample=48000[a]")
     return ";".join([mic, disc, game, mix])
 
 
@@ -249,10 +258,9 @@ def main():
         if a.plan_only or not ivals:
             return
 
-        expr = "+".join(f"between(t,{s:.3f},{e:.3f})" for s, e in ivals)
         ow, oh = a.out_size.split(",")
 
-        # Build the audio filtergraph (used as its own pass).
+        # Build the audio filtergraph (runs on the already-cut streams; no clip expression).
         if a.audio_mode == "stems":
             print("measuring stem loudness (mic / Discord / game)...")
             m_mic = measure_lufs(a.vod, a.mic_track)
@@ -261,41 +269,29 @@ def main():
             g_mic, g_disc, g_game = a.mic_lufs - m_mic, a.discord_lufs - m_disc, a.game_lufs - m_game
             print(f"  mic {m_mic:.1f}->{a.mic_lufs} ({g_mic:+.1f}dB) | Discord {m_disc:.1f}->{a.discord_lufs} "
                   f"({g_disc:+.1f}dB) | game {m_game:.1f}->{a.game_lufs} ({g_game:+.1f}dB)")
-            af = build_stem_audio(expr, a.mic_track, a.vc_track, a.game_track,
+            af = build_stem_audio(a.mic_track, a.vc_track, a.game_track,
                                   g_mic, g_disc, g_game, a.master_makeup, a.tp_limit)
         else:
-            af = (f"[0:a:{a.audio_track}]aselect='{expr}',asetpts=N/SR/TB,"
-                  f"highpass=f=40,volume={a.gain}dB,alimiter=limit=0.9:level=false[a]")
+            af = (f"[0:a:{a.audio_track}]highpass=f=40,volume={a.gain}dB,"
+                  f"alimiter=limit=0.9:level=false[a]")
 
-        # Render video and audio as SEPARATE ffmpeg passes, then mux. One giant filtergraph doing the
-        # video cut AND all three audio-stem cuts at once OOMs on modest machines (the clip-list
-        # expression ends up in the graph several times); splitting keeps each graph small.
-        out_dir = os.path.dirname(os.path.abspath(a.out))
-        vtmp = os.path.join(out_dir, ".ac_video.tmp.mp4")
-        atmp = os.path.join(out_dir, ".ac_audio.tmp.m4a")
-        vf = (f"[0:v:0]select='{expr}',setpts=N/FRAME_RATE/TB,"
-              f"scale={ow}:{oh}:flags=lanczos,fps={a.fps},setsar=1[v]")
-        vcmd = ["ffmpeg", "-v", "error", "-stats", "-i", a.vod, "-filter_complex", vf, "-map", "[v]",
-                "-an", "-c:v", "libx264", "-preset", a.preset, "-crf", str(a.crf), "-pix_fmt", "yuv420p",
-                vtmp, "-y"]
-        acmd = ["ffmpeg", "-v", "error", "-stats", "-i", a.vod, "-filter_complex", af, "-map", "[a]",
-                "-vn", "-c:a", "aac", "-b:a", "192k", "-ac", "2", atmp, "-y"]
-        muxcmd = ["ffmpeg", "-v", "error", "-i", vtmp, "-i", atmp, "-map", "0:v:0", "-map", "1:a:0",
-                  "-c", "copy", "-shortest", a.out, "-y"]
+        # Cut with the concat demuxer (clip list lives in a text file), then scale video + mix audio in
+        # ONE small filtergraph. No 150-term select expression anywhere -> initializes on any ffmpeg,
+        # and every stream is cut in lockstep so audio and video can't drift apart.
+        out_dir = os.path.dirname(os.path.abspath(a.out)) or "."
+        listf = os.path.join(out_dir, ".ac_clips.txt")
+        write_concat_list(listf, a.vod, ivals)
+        vf = f"[0:v:0]scale={ow}:{oh}:flags=lanczos,fps={a.fps},setsar=1[v]"
+        cmd = ["ffmpeg", "-v", "error", "-stats", "-f", "concat", "-safe", "0", "-i", listf,
+               "-filter_complex", f"{vf};{af}", "-map", "[v]", "-map", "[a]",
+               "-c:v", "libx264", "-preset", a.preset, "-crf", str(a.crf), "-pix_fmt", "yuv420p",
+               "-c:a", "aac", "-b:a", "192k", "-ac", "2", a.out, "-y"]
+        print(f"rendering action-condensed game ({a.preset} crf{a.crf}, {a.audio_mode} audio)...")
         try:
-            print(f"rendering VIDEO ({a.preset} crf{a.crf})...")
-            rc = subprocess.run(vcmd).returncode
-            if rc: sys.exit(rc)
-            print(f"rendering AUDIO ({a.audio_mode} mix)...")
-            rc = subprocess.run(acmd).returncode
-            if rc: sys.exit(rc)
-            print("muxing...")
-            rc = subprocess.run(muxcmd).returncode
-            sys.exit(rc)
+            sys.exit(subprocess.run(cmd).returncode)
         finally:
-            for f in (vtmp, atmp):
-                try: os.remove(f)
-                except OSError: pass
+            try: os.remove(listf)
+            except OSError: pass
 
 
 if __name__ == "__main__":
