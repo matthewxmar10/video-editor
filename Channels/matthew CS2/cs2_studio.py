@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-CS2 Studio — a small window for the CS2 editing tools. No command line.
+ClipAssembly — a small window for the CS2 editing tools. No command line.
 
 Modes:
   * Condense           — drop/choose one raw VOD, get the dead-air-cut standalone video.
@@ -8,7 +8,7 @@ Modes:
   * Clips (highlights)  — handled in the Claude chat (smaller files); this tab just explains how.
 
 A progress bar shows per-clip progress so you always know how far along it is; errors show in the
-window instead of a console flashing shut. Double-click launch (see "CS2 Studio.bat"), or drag a
+window instead of a console flashing shut. Double-click launch (see "ClipAssembly.bat"), or drag a
 video onto that .bat to open straight into Condense with the file loaded.
 """
 import os, sys, threading, queue, traceback
@@ -18,7 +18,7 @@ import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 
 import condense_action as ca
-import cs2_timeline as tl
+import runescape_timeline as tl
 
 VIDEO_TYPES = [("Video files", "*.mp4 *.mov *.mkv *.avi *.m4v *.ts *.webm"), ("All files", "*.*")]
 
@@ -28,7 +28,7 @@ class Studio:
         self.root = root
         self.q = queue.Queue()
         self.running = False
-        root.title("CS2 Studio")
+        root.title("ClipAssembly")
         root.minsize(660, 560)
 
         self.mode = tk.StringVar(value="condense")
@@ -38,7 +38,7 @@ class Studio:
         self.fast_var = tk.BooleanVar(value=False)
 
         pad = dict(padx=12, pady=6)
-        tk.Label(root, text="CS2 Studio", font=("Segoe UI", 16, "bold")).pack(anchor="w", **pad)
+        tk.Label(root, text="ClipAssembly", font=("Segoe UI", 16, "bold")).pack(anchor="w", **pad)
 
         modes = ttk.LabelFrame(root, text="Mode")
         modes.pack(fill="x", **pad)
@@ -145,15 +145,15 @@ class Studio:
         if m == "condense":
             vod = self.video_var.get().strip()
             if not os.path.isfile(vod):
-                messagebox.showwarning("CS2 Studio", "Pick a valid video file first."); return
+                messagebox.showwarning("ClipAssembly", "Pick a valid video file first."); return
             out = os.path.splitext(vod)[0] + "_condensed.mp4"
             self._launch(self._work_condense, (vod, out))
         elif m == "timeline":
             folder, txt = self.folder_var.get().strip(), self.txt_var.get().strip()
             if not os.path.isdir(folder):
-                messagebox.showwarning("CS2 Studio", "Pick the clips folder."); return
+                messagebox.showwarning("ClipAssembly", "Pick the clips folder."); return
             if not os.path.isfile(txt):
-                messagebox.showwarning("CS2 Studio", "Pick the cut-times .txt."); return
+                messagebox.showwarning("ClipAssembly", "Pick the cut-times .txt."); return
             out = os.path.join(folder, "timeline.mp4")
             self._launch(self._work_timeline, (folder, txt, out))
 
@@ -208,13 +208,13 @@ class Studio:
                     self.status.config(text="Done.")
                     self._append(f"DONE → {payload}")
                     self._set_running(False)
-                    messagebox.showinfo("CS2 Studio", f"Finished!\n\n{payload}")
+                    messagebox.showinfo("ClipAssembly", f"Finished!\n\n{payload}")
                 elif kind == "error":
                     self.pb.stop(); self.pb.config(mode="determinate"); self.pb["value"] = 0
                     self.status.config(text="Error.")
                     self._append("ERROR: " + payload)
                     self._set_running(False)
-                    messagebox.showerror("CS2 Studio", payload.split("\n")[0])
+                    messagebox.showerror("ClipAssembly", payload.split("\n")[0])
         except queue.Empty:
             pass
         self.root.after(120, self._poll)

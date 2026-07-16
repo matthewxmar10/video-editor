@@ -17,7 +17,7 @@ Example:
 
 Every kept range is cut accurately and re-encoded to a uniform 1080p60 clip, then all are joined —
 the same per-segment engine condense uses, so there is no audio/video drift or stutter at the joins.
-Run standalone:  python cs2_timeline.py <clips_folder> <cuts.txt> <out.mp4>
+Run standalone:  python runescape_timeline.py <clips_folder> <cuts.txt> <out.mp4>
 """
 import os, re, sys
 
@@ -106,7 +106,7 @@ def run_timeline(folder, txt_path, out, opts=None, progress=None, log=None):
 
 def main():
     if len(sys.argv) < 4:
-        print("usage: python cs2_timeline.py <clips_folder> <cuts.txt> <out.mp4>"); sys.exit(2)
+        print("usage: python runescape_timeline.py <clips_folder> <cuts.txt> <out.mp4>"); sys.exit(2)
     folder, txt, out = sys.argv[1], sys.argv[2], sys.argv[3]
 
     def prog(done, total):
