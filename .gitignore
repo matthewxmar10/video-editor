@@ -32,6 +32,10 @@ Channels/*/references/*.mp4
 Channels/*/references/*.png
 Channels/*/references/*.jpg
 
+# ── Python bytecode cache ──────────────────────────────────────────────────
+__pycache__/
+*.pyc
+
 # ── OS / editor cruft ──────────────────────────────────────────────────────
 .DS_Store
 .env
