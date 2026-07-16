@@ -20,6 +20,7 @@ from tkinter import ttk, filedialog, messagebox
 import condense_action as ca
 import runescape_timeline as tl
 
+VERSION = "1.0"   # bump on every update so the window shows which build is running
 VIDEO_TYPES = [("Video files", "*.mp4 *.mov *.mkv *.avi *.m4v *.ts *.webm"), ("All files", "*.*")]
 
 
@@ -28,7 +29,7 @@ class Studio:
         self.root = root
         self.q = queue.Queue()
         self.running = False
-        root.title("ClipAssembly")
+        root.title(f"ClipAssembly v{VERSION}")
         root.minsize(660, 560)
 
         self.mode = tk.StringVar(value="condense")
@@ -38,7 +39,7 @@ class Studio:
         self.fast_var = tk.BooleanVar(value=False)
 
         pad = dict(padx=12, pady=6)
-        tk.Label(root, text="ClipAssembly", font=("Segoe UI", 16, "bold")).pack(anchor="w", **pad)
+        tk.Label(root, text=f"ClipAssembly  v{VERSION}", font=("Segoe UI", 16, "bold")).pack(anchor="w", **pad)
 
         modes = ttk.LabelFrame(root, text="Mode")
         modes.pack(fill="x", **pad)
