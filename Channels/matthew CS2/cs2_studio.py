@@ -20,7 +20,7 @@ from tkinter import ttk, filedialog, messagebox
 import condense_action as ca
 import runescape_timeline as tl
 
-VERSION = "1.0"   # bump on every update so the window shows which build is running
+VERSION = "1.1"   # bump on every update so the window shows which build is running
 VIDEO_TYPES = [("Video files", "*.mp4 *.mov *.mkv *.avi *.m4v *.ts *.webm"), ("All files", "*.*")]
 
 
@@ -184,8 +184,8 @@ class Studio:
             self.q.put(("error", str(ex) + "\n\n" + traceback.format_exc()))
 
     # callbacks fired from the worker thread -> queue only (Tk touched on main thread)
-    def _progress(self, done, total):
-        self.q.put(("progress", (done, total)))
+    def _progress(self, done, total, phase=""):
+        self.q.put(("progress", (done, total, phase)))
 
     def _logq(self, msg):
         self.q.put(("log", msg))
@@ -196,11 +196,15 @@ class Studio:
             while True:
                 kind, payload = self.q.get_nowait()
                 if kind == "progress":
-                    done, total = payload
+                    done, total, phase = payload
                     if self.pb["mode"] != "determinate":
                         self.pb.stop(); self.pb.config(mode="determinate")
                     self.pb["maximum"] = total; self.pb["value"] = done
-                    self.status.config(text=f"Rendering clip {done} / {total}")
+                    if phase == "finalizing":
+                        pct = int(done * 100 / total) if total else 0
+                        self.status.config(text=f"Finalizing (constant frame rate for editors) — {pct}%")
+                    else:
+                        self.status.config(text=f"Rendering clip {done} / {total}")
                 elif kind == "log":
                     self._append(payload)
                 elif kind == "done":

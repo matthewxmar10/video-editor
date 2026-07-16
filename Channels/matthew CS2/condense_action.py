@@ -190,11 +190,30 @@ def do_probe(vod, a):
           "continuous floor (music) even when everything else is silent — never use it for --audio-track.")
 
 
-def render_and_join(segments, out, preset="medium", crf=20, progress=None, log=None):
-    """Render each segment as its own accurately-seeked, fully re-encoded mpegts clip, then join them
-    by stream copy. `segments` is a list of dicts {input, ss, dur, fc}; `fc` is a filter_complex that
-    outputs [v] and [a] from that input. progress(done, total) fires after each clip. This is the one
-    render engine shared by condense and the RuneScape-timeline assembler."""
+def _ffmpeg_progress(cmd, total_frames, progress, phase):
+    """Run ffmpeg, streaming its -progress output so we can report frame progress for a long pass."""
+    p = subprocess.Popen(cmd + ["-progress", "pipe:1", "-nostats"],
+                         stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
+    for line in p.stdout:
+        line = line.strip()
+        if line.startswith("frame=") and progress and total_frames:
+            try:
+                progress(min(int(line[6:]), total_frames), total_frames, phase)
+            except ValueError:
+                pass
+    return p.wait()
+
+
+def render_and_join(segments, out, preset="medium", crf=20, fps=60, progress=None, log=None):
+    """Cut each clip as its own accurately-seeked segment, then run ONE final pass that joins them and
+    locks the whole thing to constant frame rate with continuous audio — so editors (DaVinci Resolve)
+    don't drift audio behind the picture.  `segments` is a list of dicts {input, ss, dur, fc}; `fc` is a
+    filter_complex outputting [v] and [a].  progress(done, total, phase) fires per clip ("cutting") and
+    per frame of the final encode ("finalizing").  Shared by condense and the timeline assembler.
+
+    Two passes on purpose: the per-segment cut can't be constant-frame-rate across joins (tiny gaps),
+    and only a fresh -fps_mode cfr encode makes it uniform. Segments are near-lossless intermediates so
+    the final pass, at the requested preset/crf, sets the real quality (one effective quality encode)."""
     out_dir = os.path.dirname(os.path.abspath(out)) or "."
     segdir = os.path.join(out_dir, ".ac_segs")
     os.makedirs(segdir, exist_ok=True)
@@ -205,22 +224,26 @@ def render_and_join(segments, out, preset="medium", crf=20, progress=None, log=N
             seg = os.path.join(segdir, f"seg_{i:05d}.ts")
             cmd = ["ffmpeg", "-v", "error", "-ss", f"{sg['ss']:.3f}", "-i", sg["input"],
                    "-t", f"{sg['dur']:.3f}", "-filter_complex", sg["fc"], "-map", "[v]", "-map", "[a]",
-                   "-c:v", "libx264", "-preset", preset, "-crf", str(crf), "-pix_fmt", "yuv420p",
-                   "-c:a", "aac", "-b:a", "192k", "-ac", "2", "-f", "mpegts", seg, "-y"]
+                   "-c:v", "libx264", "-preset", "ultrafast", "-crf", "16", "-pix_fmt", "yuv420p",
+                   "-c:a", "aac", "-b:a", "256k", "-ac", "2", "-f", "mpegts", seg, "-y"]
             if subprocess.run(cmd).returncode:
                 raise RuntimeError(f"clip {i+1}/{n} failed (input={os.path.basename(sg['input'])}, "
                                    f"start={sg['ss']:.1f}s)")
             files.append(seg)
             if progress:
-                progress(i + 1, n)
+                progress(i + 1, n, "cutting")
         listf = os.path.join(segdir, "list.txt")
         write_file_list(listf, files)
         if log:
-            log("joining clips...")
-        if subprocess.run(["ffmpeg", "-v", "error", "-f", "concat", "-safe", "0", "-i", listf,
-                           "-c", "copy", "-bsf:a", "aac_adtstoasc", "-movflags", "+faststart",
-                           out, "-y"]).returncode:
-            raise RuntimeError("joining the clips failed")
+            log("finalizing: locking to constant frame rate (for editors)...")
+        total_frames = int(sum(sg["dur"] for sg in segments) * fps)
+        final = ["ffmpeg", "-v", "error", "-f", "concat", "-safe", "0", "-i", listf,
+                 "-fps_mode", "cfr", "-r", str(fps),
+                 "-c:v", "libx264", "-preset", preset, "-crf", str(crf), "-pix_fmt", "yuv420p",
+                 "-af", "aresample=async=1:first_pts=0", "-c:a", "aac", "-b:a", "192k", "-ac", "2",
+                 "-movflags", "+faststart", out, "-y"]
+        if _ffmpeg_progress(final, total_frames, progress, "finalizing"):
+            raise RuntimeError("final CFR pass failed")
     finally:
         shutil.rmtree(segdir, ignore_errors=True)
     return out
@@ -286,7 +309,7 @@ def run_condense(a, progress=None, log=None):
         segments = [{"input": a.vod, "ss": s, "dur": e - s, "fc": fc} for s, e in ivals]
         if log:
             log(f"rendering {len(segments)} clips ({a.preset} crf{a.crf}, {a.audio_mode} audio)...")
-        return render_and_join(segments, a.out, a.preset, a.crf, progress=progress, log=log)
+        return render_and_join(segments, a.out, a.preset, a.crf, fps=a.fps, progress=progress, log=log)
 
 
 def main():
@@ -324,16 +347,14 @@ def main():
     if a.probe:
         do_probe(a.vod, a); return
 
-    def prog(done, total):
-        print(f"\r  {done}/{total} clips", end="", flush=True)
-        if done == total:
-            print()
+    def prog(done, total, phase=""):
+        print(f"\r  {phase}: {done}/{total}      ", end="", flush=True)
     try:
         out = run_condense(a, progress=prog, log=print)
     except RuntimeError as ex:
         print(f"\nERROR: {ex}"); sys.exit(1)
     if out:
-        print(f"done -> {out}")
+        print(f"\ndone -> {out}")
 
 
 if __name__ == "__main__":

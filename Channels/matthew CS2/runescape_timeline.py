@@ -101,7 +101,7 @@ def run_timeline(folder, txt_path, out, opts=None, progress=None, log=None):
     if log:
         total = sum(e - s for _, rs in edl for s, e in rs)
         log(f"timeline: {len(edl)} clips, {len(segs)} segments, {total/60:.1f} min total")
-    return ca.render_and_join(segs, out, opts.preset, opts.crf, progress=progress, log=log)
+    return ca.render_and_join(segs, out, opts.preset, opts.crf, fps=opts.fps, progress=progress, log=log)
 
 
 def main():
@@ -109,10 +109,8 @@ def main():
         print("usage: python runescape_timeline.py <clips_folder> <cuts.txt> <out.mp4>"); sys.exit(2)
     folder, txt, out = sys.argv[1], sys.argv[2], sys.argv[3]
 
-    def prog(done, total):
-        print(f"\r  {done}/{total} segments", end="", flush=True)
-        if done == total:
-            print()
+    def prog(done, total, phase=""):
+        print(f"\r  {phase}: {done}/{total}      ", end="", flush=True)
     try:
         res = run_timeline(folder, txt, out, progress=prog, log=print)
         print(f"done -> {res}")
