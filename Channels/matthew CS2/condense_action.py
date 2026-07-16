@@ -190,6 +190,105 @@ def do_probe(vod, a):
           "continuous floor (music) even when everything else is silent — never use it for --audio-track.")
 
 
+def render_and_join(segments, out, preset="medium", crf=20, progress=None, log=None):
+    """Render each segment as its own accurately-seeked, fully re-encoded mpegts clip, then join them
+    by stream copy. `segments` is a list of dicts {input, ss, dur, fc}; `fc` is a filter_complex that
+    outputs [v] and [a] from that input. progress(done, total) fires after each clip. This is the one
+    render engine shared by condense and the RuneScape-timeline assembler."""
+    out_dir = os.path.dirname(os.path.abspath(out)) or "."
+    segdir = os.path.join(out_dir, ".ac_segs")
+    os.makedirs(segdir, exist_ok=True)
+    files = []
+    n = len(segments)
+    try:
+        for i, sg in enumerate(segments):
+            seg = os.path.join(segdir, f"seg_{i:05d}.ts")
+            cmd = ["ffmpeg", "-v", "error", "-ss", f"{sg['ss']:.3f}", "-i", sg["input"],
+                   "-t", f"{sg['dur']:.3f}", "-filter_complex", sg["fc"], "-map", "[v]", "-map", "[a]",
+                   "-c:v", "libx264", "-preset", preset, "-crf", str(crf), "-pix_fmt", "yuv420p",
+                   "-c:a", "aac", "-b:a", "192k", "-ac", "2", "-f", "mpegts", seg, "-y"]
+            if subprocess.run(cmd).returncode:
+                raise RuntimeError(f"clip {i+1}/{n} failed (input={os.path.basename(sg['input'])}, "
+                                   f"start={sg['ss']:.1f}s)")
+            files.append(seg)
+            if progress:
+                progress(i + 1, n)
+        listf = os.path.join(segdir, "list.txt")
+        write_file_list(listf, files)
+        if log:
+            log("joining clips...")
+        if subprocess.run(["ffmpeg", "-v", "error", "-f", "concat", "-safe", "0", "-i", listf,
+                           "-c", "copy", "-bsf:a", "aac_adtstoasc", "-movflags", "+faststart",
+                           out, "-y"]).returncode:
+            raise RuntimeError("joining the clips failed")
+    finally:
+        shutil.rmtree(segdir, ignore_errors=True)
+    return out
+
+
+def default_opts(**over):
+    """A namespace of condense knobs with the channel defaults, for callers without a command line
+    (e.g. the Studio GUI). Override any field via keyword."""
+    import types
+    d = dict(combat_pct=91.0, mic_thr=-46.0, vc_thr=-40.0, lead=2.0, tail=2.5, merge_gap=4.0,
+             min_seg=4.0, audio_mode="stems", audio_track=1, mic_track=2, game_track=3, vc_track=4,
+             mic_lufs=-16.0, discord_lufs=-20.5, game_lufs=-24.0, master_makeup=3.0, tp_limit=0.79,
+             gain=22.0, out_size="1920,1080", fps=60, preset="medium", crf=20, plan_only=False,
+             probe=False, vod=None, out=None)
+    d.update(over)
+    return types.SimpleNamespace(**d)
+
+
+def run_condense(a, progress=None, log=None):
+    """Detect action, balance the stems, and render the condensed video. `a` carries the knobs
+    (argparse namespace or default_opts()). progress(done, total) fires per clip; log(str) narrates.
+    Returns the output path, or None for plan-only / nothing kept."""
+    dur = probe_dur(a.vod)
+    with tempfile.TemporaryDirectory() as td:
+        gp = os.path.join(td, "game.wav"); mp = os.path.join(td, "mic.wav"); vp = os.path.join(td, "vc.wav")
+        extract(a.vod, a.game_track, gp, 22050)
+        extract(a.vod, a.mic_track, mp, 8000)
+        extract(a.vod, a.vc_track, vp, 8000)
+        game, gsr = load_wav(gp)
+        ci, hop = combat_intensity(game, gsr)
+        grid_t = np.arange(len(ci)) * hop
+        micG = to_grid(env_db(*load_wav(mp)), grid_t)
+        vcG = to_grid(env_db(*load_wav(vp)), grid_t)
+        nn = min(len(ci), len(micG), len(vcG))
+        ci, micG, vcG, grid_t = ci[:nn], micG[:nn], vcG[:nn], grid_t[:nn]
+        active = (ci > np.percentile(ci, a.combat_pct)) | (micG > a.mic_thr) | (vcG > a.vc_thr)
+        merged, N = compute_segments(active, hop, a.lead, a.tail, a.merge_gap, a.min_seg)
+        ivals = [(float(grid_t[s]), float(grid_t[min(e, N - 1)])) for s, e in merged]
+        kept = sum(e - s for s, e in ivals); lens = [e - s for s, e in ivals] or [0]
+        if log:
+            log(f"source {dur/60:.1f} min  ->  kept {kept/60:.1f} min ({kept/dur*100:.0f}%) across "
+                f"{len(ivals)} clips, median {np.median(lens):.1f}s, longest {max(lens):.1f}s")
+        if getattr(a, "plan_only", False) or not ivals:
+            return None
+        ow, oh = a.out_size.split(",")
+        if a.audio_mode == "stems":
+            if log:
+                log("measuring stem loudness (mic / Discord / game)...")
+            m_mic = measure_lufs(a.vod, a.mic_track)
+            m_disc = measure_lufs(a.vod, a.vc_track)
+            m_game = measure_lufs(a.vod, a.game_track)
+            if log:
+                log(f"  mic {m_mic:.1f}->{a.mic_lufs} | Discord {m_disc:.1f}->{a.discord_lufs} "
+                    f"| game {m_game:.1f}->{a.game_lufs}")
+            af = build_stem_audio(a.mic_track, a.vc_track, a.game_track,
+                                  a.mic_lufs - m_mic, a.discord_lufs - m_disc, a.game_lufs - m_game,
+                                  a.master_makeup, a.tp_limit)
+        else:
+            af = (f"[0:a:{a.audio_track}]highpass=f=40,volume={a.gain}dB,"
+                  f"alimiter=limit=0.9:level=false,asetpts=PTS-STARTPTS[a]")
+        vf = f"[0:v:0]scale={ow}:{oh}:flags=lanczos,fps={a.fps},setsar=1,setpts=PTS-STARTPTS[v]"
+        fc = f"{vf};{af}"
+        segments = [{"input": a.vod, "ss": s, "dur": e - s, "fc": fc} for s, e in ivals]
+        if log:
+            log(f"rendering {len(segments)} clips ({a.preset} crf{a.crf}, {a.audio_mode} audio)...")
+        return render_and_join(segments, a.out, a.preset, a.crf, progress=progress, log=log)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("vod"); ap.add_argument("out", nargs="?", default="/dev/null")
@@ -225,85 +324,16 @@ def main():
     if a.probe:
         do_probe(a.vod, a); return
 
-    dur = probe_dur(a.vod)
-    with tempfile.TemporaryDirectory() as td:
-        gp = os.path.join(td, "game.wav"); mp = os.path.join(td, "mic.wav"); vp = os.path.join(td, "vc.wav")
-        extract(a.vod, a.game_track, gp, 22050)   # hi-SR for gunfire onset detection
-        extract(a.vod, a.mic_track, mp, 8000)
-        extract(a.vod, a.vc_track, vp, 8000)
-        game, gsr = load_wav(gp)
-        ci, hop = combat_intensity(game, gsr)
-        grid_t = np.arange(len(ci)) * hop
-        micG = to_grid(env_db(*load_wav(mp)), grid_t)
-        vcG = to_grid(env_db(*load_wav(vp)), grid_t)
-        n = min(len(ci), len(micG), len(vcG))
-        ci, micG, vcG, grid_t = ci[:n], micG[:n], vcG[:n], grid_t[:n]
-
-        ci_thr = np.percentile(ci, a.combat_pct)
-        active = (ci > ci_thr) | (micG > a.mic_thr) | (vcG > a.vc_thr)
-        merged, N = compute_segments(active, hop, a.lead, a.tail, a.merge_gap, a.min_seg)
-        ivals = [(float(grid_t[s]), float(grid_t[min(e, N - 1)])) for s, e in merged]
-        kept = sum(e - s for s, e in ivals)
-        lens = [e - s for s, e in ivals] or [0]
-
-        print(f"ACTION-CONDENSE  combat>p{a.combat_pct:.0f} | mic>{a.mic_thr}dB | vc>{a.vc_thr}dB | "
-              f"lead {a.lead}s tail {a.tail}s merge {a.merge_gap}s")
-        print(f"  source {dur/60:.1f} min  ->  kept {kept/60:.1f} min ({kept/dur*100:.0f}%)  "
-              f"across {len(ivals)} clips ({len(ivals)-1} cuts), median {np.median(lens):.1f}s, "
-              f"longest {max(lens):.1f}s")
-        if a.plan_only or not ivals:
-            return
-
-        ow, oh = a.out_size.split(",")
-
-        # Build the per-segment audio filtergraph.
-        if a.audio_mode == "stems":
-            print("measuring stem loudness (mic / Discord / game)...")
-            m_mic = measure_lufs(a.vod, a.mic_track)
-            m_disc = measure_lufs(a.vod, a.vc_track)
-            m_game = measure_lufs(a.vod, a.game_track)
-            g_mic, g_disc, g_game = a.mic_lufs - m_mic, a.discord_lufs - m_disc, a.game_lufs - m_game
-            print(f"  mic {m_mic:.1f}->{a.mic_lufs} ({g_mic:+.1f}dB) | Discord {m_disc:.1f}->{a.discord_lufs} "
-                  f"({g_disc:+.1f}dB) | game {m_game:.1f}->{a.game_lufs} ({g_game:+.1f}dB)")
-            af = build_stem_audio(a.mic_track, a.vc_track, a.game_track,
-                                  g_mic, g_disc, g_game, a.master_makeup, a.tp_limit)
-        else:
-            af = (f"[0:a:{a.audio_track}]highpass=f=40,volume={a.gain}dB,"
-                  f"alimiter=limit=0.9:level=false,asetpts=PTS-STARTPTS[a]")
-        vf = f"[0:v:0]scale={ow}:{oh}:flags=lanczos,fps={a.fps},setsar=1,setpts=PTS-STARTPTS[v]"
-
-        # Cut each clip as its OWN accurately-seeked, fully re-encoded segment, then join the segments
-        # with stream copy. Every segment trims video and audio to the same frame and resets its
-        # timestamps to zero, so audio and video can't lead each other and there's no keyframe-seek
-        # stutter (the failure modes of a single concat-demuxer pass). No giant filter expression, so
-        # it also initializes on any ffmpeg build.  -ss before -i = fast keyframe seek; re-encoding
-        # then trims to the exact in-point.  mpegts segments concatenate cleanly by copy.
-        out_dir = os.path.dirname(os.path.abspath(a.out)) or "."
-        segdir = os.path.join(out_dir, ".ac_segs")
-        os.makedirs(segdir, exist_ok=True)
-        segs = []
-        print(f"rendering {len(ivals)} clips ({a.preset} crf{a.crf}, {a.audio_mode} audio)...")
-        try:
-            for i, (s, e) in enumerate(ivals):
-                seg = os.path.join(segdir, f"seg_{i:04d}.ts")
-                scmd = ["ffmpeg", "-v", "error", "-ss", f"{s:.3f}", "-i", a.vod, "-t", f"{e-s:.3f}",
-                        "-filter_complex", f"{vf};{af}", "-map", "[v]", "-map", "[a]",
-                        "-c:v", "libx264", "-preset", a.preset, "-crf", str(a.crf), "-pix_fmt", "yuv420p",
-                        "-c:a", "aac", "-b:a", "192k", "-ac", "2", "-f", "mpegts", seg, "-y"]
-                rc = subprocess.run(scmd).returncode
-                if rc:
-                    print(f"\nclip {i} failed (t={s:.1f}-{e:.1f})"); sys.exit(rc)
-                segs.append(seg)
-                print(f"\r  {i+1}/{len(ivals)} clips", end="", flush=True)
+    def prog(done, total):
+        print(f"\r  {done}/{total} clips", end="", flush=True)
+        if done == total:
             print()
-            listf = os.path.join(segdir, "list.txt")
-            write_file_list(listf, segs)
-            print("joining clips...")
-            muxcmd = ["ffmpeg", "-v", "error", "-stats", "-f", "concat", "-safe", "0", "-i", listf,
-                      "-c", "copy", "-bsf:a", "aac_adtstoasc", "-movflags", "+faststart", a.out, "-y"]
-            sys.exit(subprocess.run(muxcmd).returncode)
-        finally:
-            shutil.rmtree(segdir, ignore_errors=True)
+    try:
+        out = run_condense(a, progress=prog, log=print)
+    except RuntimeError as ex:
+        print(f"\nERROR: {ex}"); sys.exit(1)
+    if out:
+        print(f"done -> {out}")
 
 
 if __name__ == "__main__":
