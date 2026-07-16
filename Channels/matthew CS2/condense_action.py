@@ -45,7 +45,7 @@ Usage:
   --combat-pct  keep game onsets above this percentile: lower = keep more action (88 looser, 91
                 balanced, 94 tighter).  --plan-only prints kept length / clip count without rendering.
 """
-import argparse, subprocess, sys, tempfile, os, wave
+import argparse, subprocess, sys, tempfile, os, wave, shutil
 import numpy as np
 
 
@@ -146,16 +146,11 @@ def measure_lufs(vod, track):
     raise RuntimeError(f"could not measure loudness of track a:{track}")
 
 
-def write_concat_list(path, vod, ivals):
-    """Write a concat-demuxer list that keeps only `ivals` of `vod`. The demuxer cuts every segment
-    from the clip list in a text FILE — no filter expression is built, so the filtergraph stays tiny
-    no matter how many clips there are (a 150-term `select` expression fails to allocate on some
-    ffmpeg builds). All streams (video + every audio track) are cut in lockstep, so A/V never drifts."""
-    src = os.path.abspath(vod).replace("\\", "/").replace("'", r"'\''")
+def write_file_list(path, files):
+    """concat-demuxer list of already-encoded segment files (joined with stream copy)."""
     with open(path, "w", encoding="utf-8") as f:
-        f.write("ffconcat version 1.0\n")
-        for s, e in ivals:
-            f.write(f"file '{src}'\ninpoint {s:.3f}\noutpoint {e:.3f}\n")
+        for p in files:
+            f.write("file '%s'\n" % os.path.abspath(p).replace("\\", "/").replace("'", r"'\''"))
 
 
 def build_stem_audio(mic_t, disc_t, game_t, g_mic, g_disc, g_game, master_makeup, tp_limit):
@@ -175,7 +170,8 @@ def build_stem_audio(mic_t, disc_t, game_t, g_mic, g_disc, g_game, master_makeup
     disc = f"[0:a:{disc_t}]agate=threshold=0.0018:range=-18dB,volume={g_disc:.2f}dB[disc]"
     game = f"[0:a:{game_t}]volume={g_game:.2f}dB[game]"
     mix = (f"[mic][disc][game]amix=inputs=3:normalize=0:duration=longest,"
-           f"volume={master_makeup:.2f}dB,alimiter=limit={tp_limit}:level=false,aresample=48000[a]")
+           f"volume={master_makeup:.2f}dB,alimiter=limit={tp_limit}:level=false,aresample=48000,"
+           f"asetpts=PTS-STARTPTS[a]")
     return ";".join([mic, disc, game, mix])
 
 
@@ -260,7 +256,7 @@ def main():
 
         ow, oh = a.out_size.split(",")
 
-        # Build the audio filtergraph (runs on the already-cut streams; no clip expression).
+        # Build the per-segment audio filtergraph.
         if a.audio_mode == "stems":
             print("measuring stem loudness (mic / Discord / game)...")
             m_mic = measure_lufs(a.vod, a.mic_track)
@@ -273,25 +269,41 @@ def main():
                                   g_mic, g_disc, g_game, a.master_makeup, a.tp_limit)
         else:
             af = (f"[0:a:{a.audio_track}]highpass=f=40,volume={a.gain}dB,"
-                  f"alimiter=limit=0.9:level=false[a]")
+                  f"alimiter=limit=0.9:level=false,asetpts=PTS-STARTPTS[a]")
+        vf = f"[0:v:0]scale={ow}:{oh}:flags=lanczos,fps={a.fps},setsar=1,setpts=PTS-STARTPTS[v]"
 
-        # Cut with the concat demuxer (clip list lives in a text file), then scale video + mix audio in
-        # ONE small filtergraph. No 150-term select expression anywhere -> initializes on any ffmpeg,
-        # and every stream is cut in lockstep so audio and video can't drift apart.
+        # Cut each clip as its OWN accurately-seeked, fully re-encoded segment, then join the segments
+        # with stream copy. Every segment trims video and audio to the same frame and resets its
+        # timestamps to zero, so audio and video can't lead each other and there's no keyframe-seek
+        # stutter (the failure modes of a single concat-demuxer pass). No giant filter expression, so
+        # it also initializes on any ffmpeg build.  -ss before -i = fast keyframe seek; re-encoding
+        # then trims to the exact in-point.  mpegts segments concatenate cleanly by copy.
         out_dir = os.path.dirname(os.path.abspath(a.out)) or "."
-        listf = os.path.join(out_dir, ".ac_clips.txt")
-        write_concat_list(listf, a.vod, ivals)
-        vf = f"[0:v:0]scale={ow}:{oh}:flags=lanczos,fps={a.fps},setsar=1[v]"
-        cmd = ["ffmpeg", "-v", "error", "-stats", "-f", "concat", "-safe", "0", "-i", listf,
-               "-filter_complex", f"{vf};{af}", "-map", "[v]", "-map", "[a]",
-               "-c:v", "libx264", "-preset", a.preset, "-crf", str(a.crf), "-pix_fmt", "yuv420p",
-               "-c:a", "aac", "-b:a", "192k", "-ac", "2", a.out, "-y"]
-        print(f"rendering action-condensed game ({a.preset} crf{a.crf}, {a.audio_mode} audio)...")
+        segdir = os.path.join(out_dir, ".ac_segs")
+        os.makedirs(segdir, exist_ok=True)
+        segs = []
+        print(f"rendering {len(ivals)} clips ({a.preset} crf{a.crf}, {a.audio_mode} audio)...")
         try:
-            sys.exit(subprocess.run(cmd).returncode)
+            for i, (s, e) in enumerate(ivals):
+                seg = os.path.join(segdir, f"seg_{i:04d}.ts")
+                scmd = ["ffmpeg", "-v", "error", "-ss", f"{s:.3f}", "-i", a.vod, "-t", f"{e-s:.3f}",
+                        "-filter_complex", f"{vf};{af}", "-map", "[v]", "-map", "[a]",
+                        "-c:v", "libx264", "-preset", a.preset, "-crf", str(a.crf), "-pix_fmt", "yuv420p",
+                        "-c:a", "aac", "-b:a", "192k", "-ac", "2", "-f", "mpegts", seg, "-y"]
+                rc = subprocess.run(scmd).returncode
+                if rc:
+                    print(f"\nclip {i} failed (t={s:.1f}-{e:.1f})"); sys.exit(rc)
+                segs.append(seg)
+                print(f"\r  {i+1}/{len(ivals)} clips", end="", flush=True)
+            print()
+            listf = os.path.join(segdir, "list.txt")
+            write_file_list(listf, segs)
+            print("joining clips...")
+            muxcmd = ["ffmpeg", "-v", "error", "-stats", "-f", "concat", "-safe", "0", "-i", listf,
+                      "-c", "copy", "-bsf:a", "aac_adtstoasc", "-movflags", "+faststart", a.out, "-y"]
+            sys.exit(subprocess.run(muxcmd).returncode)
         finally:
-            try: os.remove(listf)
-            except OSError: pass
+            shutil.rmtree(segdir, ignore_errors=True)
 
 
 if __name__ == "__main__":
