@@ -19,8 +19,16 @@ KEEP a moment when ANY of:
 Each kept region is padded (--lead before, --tail after) so you see the engagement start and the
 outcome, and nearby regions merge (--merge-gap) so a round's fights read as one clip, not confetti.
 
+AUDIO (default = stems mode): the final mix is REBUILT from the individual music-free tracks —
+mic (a:2) + Discord/voice-chat (a:4) + game (a:3), never the Master track (music = copyright). Each
+source is loudness-measured and gained to a target so they sit in a fixed balance: your mic on top,
+Discord just under it, game as the bed underneath. The mic is high-passed + compressed so its wide,
+spiky dynamics stop peaking; a master true-peak limiter guards the sum. No dynamic normalizer is used
+anywhere, so nothing chases a target and ducks the mix. `--audio-mode vod` falls back to the old
+single pre-mixed VOD-Track boost. Tune with --mic-lufs / --discord-lufs / --game-lufs.
+
 HARD RULES (shared with the rest of the channel):
-  * Final audio = the music-free VOD Track (never the Master Track) — copyright.
+  * Final audio is music-free — built from mic+Discord+game stems (or the VOD Track), never the Master.
   * Facecam / green screen used exactly as recorded — nothing keyed, full frame kept.
   * Chronological order always; never regroup by category.
 
@@ -125,6 +133,39 @@ def compute_segments(active, hop, lead, tail, merge_gap, min_seg):
     return merged, N
 
 
+def measure_lufs(vod, track):
+    """Integrated loudness (LUFS) of one audio track, via loudnorm's analysis pass.
+    Audio-only (no video decode) so it's fast even on a long VOD."""
+    out = subprocess.run(
+        ["ffmpeg", "-hide_banner", "-nostats", "-vn", "-i", vod, "-map", f"0:a:{track}",
+         "-af", "loudnorm=print_format=json", "-f", "null", "-"],
+        capture_output=True, text=True)
+    for line in out.stderr.splitlines():
+        if '"input_i"' in line:
+            return float(line.split(":")[1].strip().strip('",'))
+    raise RuntimeError(f"could not measure loudness of track a:{track}")
+
+
+def build_stem_audio(expr, mic_t, disc_t, game_t, g_mic, g_disc, g_game, master_makeup, tp_limit):
+    """The approved CS2 stem mix, built on the SAME select expr as the video so every stem is cut
+    identically then re-balanced. Music-free (mic + Discord + game only; never the Master track).
+
+    - mic:     high-pass (rumble) -> compressor (tame the wide, spiky dynamics that were peaking)
+               -> static gain to the mic LUFS target. A limiter on the master catches residual peaks.
+    - discord: noise gate (so the big make-up gain doesn't amplify idle hiss) -> static gain.
+    - game:    static gain (sits underneath as the bed).
+    - master:  sum (no auto-attenuation) -> small make-up -> true-peak limiter. NO loudnorm anywhere,
+               so nothing chases a target and ducks the mix (that was the end-of-clip cut-out bug)."""
+    sel = lambda t: f"[0:a:{t}]aselect='{expr}',asetpts=N/SR/TB"
+    mic = (f"{sel(mic_t)},highpass=f=80,"
+           f"acompressor=threshold=-20dB:ratio=3:attack=5:release=150,volume={g_mic:.2f}dB[mic]")
+    disc = f"{sel(disc_t)},agate=threshold=0.0018:range=-18dB,volume={g_disc:.2f}dB[disc]"
+    game = f"{sel(game_t)},volume={g_game:.2f}dB[game]"
+    mix = (f"[mic][disc][game]amix=inputs=3:normalize=0:duration=longest,"
+           f"volume={master_makeup:.2f}dB,alimiter=limit={tp_limit}:level=false,aresample=48000[a]")
+    return ";".join([mic, disc, game, mix])
+
+
 def do_probe(vod, a):
     nt = n_audio_tracks(vod)
     print(f"{nt} audio tracks. Per-track envelope stats (identify VOD/mic/game/voice by content):")
@@ -151,11 +192,20 @@ def main():
     ap.add_argument("--tail", type=float, default=2.5, help="seconds kept after each region (see the outcome)")
     ap.add_argument("--merge-gap", type=float, default=4.0, help="bridge kept regions closer than this (s)")
     ap.add_argument("--min-seg", type=float, default=4.0, help="drop kept clips shorter than this (s)")
-    ap.add_argument("--audio-track", type=int, default=1, help="final audio = VOD Track (music-free)")
+    ap.add_argument("--audio-mode", choices=["stems", "vod"], default="stems",
+                    help="stems = rebalance mic/Discord/game from the individual tracks (default); "
+                         "vod = the single pre-mixed music-free VOD Track (legacy)")
+    ap.add_argument("--audio-track", type=int, default=1, help="vod mode: the pre-mixed VOD Track (music-free)")
     ap.add_argument("--mic-track", type=int, default=2)
     ap.add_argument("--game-track", type=int, default=3)
-    ap.add_argument("--vc-track", type=int, default=4)
-    ap.add_argument("--gain", type=float, default=22.0)
+    ap.add_argument("--vc-track", type=int, default=4, help="Discord / teammate voice chat")
+    # stems mode: per-source loudness targets (LUFS). Mic sits on top, Discord just under, game is the bed.
+    ap.add_argument("--mic-lufs", type=float, default=-16.0)
+    ap.add_argument("--discord-lufs", type=float, default=-19.5)
+    ap.add_argument("--game-lufs", type=float, default=-24.0)
+    ap.add_argument("--master-makeup", type=float, default=3.0, help="stems: final make-up gain (dB) before the limiter")
+    ap.add_argument("--tp-limit", type=float, default=0.89, help="stems: master limiter ceiling (linear, ~-1 dBFS)")
+    ap.add_argument("--gain", type=float, default=22.0, help="vod mode: blanket boost on the VOD Track (dB)")
     ap.add_argument("--out-size", default="1920,1080"); ap.add_argument("--fps", type=int, default=60)
     ap.add_argument("--preset", default="medium"); ap.add_argument("--crf", type=int, default=20)
     ap.add_argument("--plan-only", action="store_true")
@@ -198,12 +248,25 @@ def main():
         ow, oh = a.out_size.split(",")
         vf = (f"[0:v:0]select='{expr}',setpts=N/FRAME_RATE/TB,"
               f"scale={ow}:{oh}:flags=lanczos,fps={a.fps},setsar=1[v]")
-        af = (f"[0:a:{a.audio_track}]aselect='{expr}',asetpts=N/SR/TB,"
-              f"highpass=f=40,volume={a.gain}dB,alimiter=limit=0.9:level=false[a]")
+
+        if a.audio_mode == "stems":
+            print("measuring stem loudness (mic / Discord / game)...")
+            m_mic = measure_lufs(a.vod, a.mic_track)
+            m_disc = measure_lufs(a.vod, a.vc_track)
+            m_game = measure_lufs(a.vod, a.game_track)
+            g_mic, g_disc, g_game = a.mic_lufs - m_mic, a.discord_lufs - m_disc, a.game_lufs - m_game
+            print(f"  mic {m_mic:.1f}->{a.mic_lufs} ({g_mic:+.1f}dB) | Discord {m_disc:.1f}->{a.discord_lufs} "
+                  f"({g_disc:+.1f}dB) | game {m_game:.1f}->{a.game_lufs} ({g_game:+.1f}dB)")
+            af = build_stem_audio(expr, a.mic_track, a.vc_track, a.game_track,
+                                  g_mic, g_disc, g_game, a.master_makeup, a.tp_limit)
+        else:
+            af = (f"[0:a:{a.audio_track}]aselect='{expr}',asetpts=N/SR/TB,"
+                  f"highpass=f=40,volume={a.gain}dB,alimiter=limit=0.9:level=false[a]")
+
         cmd = ["ffmpeg", "-v", "error", "-stats", "-i", a.vod, "-filter_complex", f"{vf};{af}",
                "-map", "[v]", "-map", "[a]", "-c:v", "libx264", "-preset", a.preset, "-crf", str(a.crf),
                "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-ac", "2", a.out, "-y"]
-        print(f"rendering action-condensed game ({a.preset} crf{a.crf})...")
+        print(f"rendering action-condensed game ({a.preset} crf{a.crf}, {a.audio_mode} audio)...")
         sys.exit(subprocess.run(cmd).returncode)
 
 
