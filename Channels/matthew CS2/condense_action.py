@@ -201,7 +201,7 @@ def main():
     ap.add_argument("--vc-track", type=int, default=4, help="Discord / teammate voice chat")
     # stems mode: per-source loudness targets (LUFS). Mic sits on top, Discord just under, game is the bed.
     ap.add_argument("--mic-lufs", type=float, default=-16.0)
-    ap.add_argument("--discord-lufs", type=float, default=-19.5)
+    ap.add_argument("--discord-lufs", type=float, default=-20.5)
     ap.add_argument("--game-lufs", type=float, default=-24.0)
     ap.add_argument("--master-makeup", type=float, default=3.0, help="stems: final make-up gain (dB) before the limiter")
     ap.add_argument("--tp-limit", type=float, default=0.79,
