@@ -204,7 +204,8 @@ def main():
     ap.add_argument("--discord-lufs", type=float, default=-19.5)
     ap.add_argument("--game-lufs", type=float, default=-24.0)
     ap.add_argument("--master-makeup", type=float, default=3.0, help="stems: final make-up gain (dB) before the limiter")
-    ap.add_argument("--tp-limit", type=float, default=0.89, help="stems: master limiter ceiling (linear, ~-1 dBFS)")
+    ap.add_argument("--tp-limit", type=float, default=0.79,
+                    help="stems: master limiter ceiling (linear; 0.79 lands ~-1.5 dBTP after inter-sample overshoot)")
     ap.add_argument("--gain", type=float, default=22.0, help="vod mode: blanket boost on the VOD Track (dB)")
     ap.add_argument("--out-size", default="1920,1080"); ap.add_argument("--fps", type=int, default=60)
     ap.add_argument("--preset", default="medium"); ap.add_argument("--crf", type=int, default=20)
