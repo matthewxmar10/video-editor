@@ -20,7 +20,7 @@ from tkinter import ttk, filedialog, messagebox
 import condense_action as ca
 import runescape_timeline as tl
 
-VERSION = "1.1"   # bump on every update so the window shows which build is running
+VERSION = "1.2"   # bump on every update so the window shows which build is running
 VIDEO_TYPES = [("Video files", "*.mp4 *.mov *.mkv *.avi *.m4v *.ts *.webm"), ("All files", "*.*")]
 
 
@@ -99,7 +99,8 @@ class Studio:
         self._row(self.p_timeline, "Cut-times .txt:", self.txt_var, self._pick_txt).pack(fill="x", pady=4)
         ttk.Label(self.p_timeline, wraplength=600, foreground="#555",
                   text="One line per clip:  filename - 0:10 - 0:45; 1:20 - 1:35   "
-                       "(semicolons separate multiple ranges from one clip). Output: timeline.mp4 "
+                       "(semicolons = multiple ranges from one clip; 'filename - Full clip' keeps the "
+                       "whole clip). Unreadable lines are reported in the log. Output: timeline.mp4 "
                        "in the clips folder.").pack(anchor="w", pady=4)
 
     def _build_clips(self):

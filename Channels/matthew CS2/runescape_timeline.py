@@ -9,11 +9,14 @@ The .txt is one line per source clip:
   * filename then a hyphen/en-dash, then start-end for each kept range.
   * Multiple ranges from the same clip are separated by semicolons.
   * Times are m:ss or h:mm:ss (e.g. 0:12, 1:04, 1:02:33).
+  * "<name> - Full clip" keeps the ENTIRE clip (no trimming).
   * Lines are assembled top-to-bottom; ranges within a line in written order.
+  * Lines that can't be read are reported (not silently dropped).
 
 Example:
     fight_at_bandos.mp4 - 0:10 - 0:45; 2:03 - 2:20
     zulrah.mp4 - 1:30 - 1:58
+    intro.mp4 - Full clip
 
 Every kept range is cut accurately and re-encoded to a uniform 1080p60 clip, then all are joined —
 the same per-segment engine condense uses, so there is no audio/video drift or stutter at the joins.
@@ -36,28 +39,32 @@ def tc_to_sec(t):
 
 
 def parse_edl(text):
-    """Parse the cut-times .txt into [(clipname, [(start_s, end_s), ...]), ...]."""
-    rows = []
+    """Parse the cut-times .txt. Returns (rows, skipped) where rows is
+    [(clipname, [(start_s, end_s), ...]), ...] and skipped is [(lineno, text), ...] for lines that
+    couldn't be read. An end of None means 'to the end of the clip' (a "Full clip" line)."""
+    rows, skipped = [], []
     for lineno, raw in enumerate(text.splitlines(), 1):
         line = raw.strip().replace("–", "-").replace("—", "-")  # en/em dash -> hyphen
         if not line or line.startswith("#"):
             continue
         tcs = list(_TC.finditer(line))
-        if not tcs:
+        if tcs:
+            name = line[:tcs[0].start()].rstrip(" -\t").strip().strip('"')
+            times = [tc_to_sec(m.group(0)) for m in tcs]
+            ranges = [(times[i], times[i + 1]) for i in range(0, len(times) - 1, 2)
+                      if times[i + 1] > times[i]]
+            if name and ranges:
+                rows.append((name, ranges))
+            else:
+                skipped.append((lineno, raw.strip()))
             continue
-        name = line[:tcs[0].start()].rstrip(" -\t").strip().strip('"')
-        times = [tc_to_sec(m.group(0)) for m in tcs]
-        ranges = []
-        for i in range(0, len(times) - 1, 2):
-            s, e = times[i], times[i + 1]
-            if e > s:
-                ranges.append((s, e))
-        if not name:
-            raise ValueError(f"line {lineno}: could not read a clip name before the times")
-        if not ranges:
-            raise ValueError(f"line {lineno}: no valid start-end pairs for '{name}'")
-        rows.append((name, ranges))
-    return rows
+        # no timecodes: a "<name> - Full clip" line means keep the whole clip
+        m = re.match(r"^(.*?)\s*-\s*full\b", line, re.IGNORECASE)
+        if m and m.group(1).strip():
+            rows.append((m.group(1).strip().strip('"'), [(0.0, None)]))
+        else:
+            skipped.append((lineno, raw.strip()))
+    return rows, skipped
 
 
 def resolve_clip(folder, name):
@@ -87,6 +94,8 @@ def build_segments(folder, edl, out_size="1920,1080", fps=60):
     for name, ranges in edl:
         path = resolve_clip(folder, name)
         for s, e in ranges:
+            if e is None:                       # "Full clip" -> to the end of the file
+                e = ca.probe_dur(path)
             segs.append({"input": path, "ss": float(s), "dur": float(e - s), "fc": fc})
     return segs
 
@@ -94,13 +103,17 @@ def build_segments(folder, edl, out_size="1920,1080", fps=60):
 def run_timeline(folder, txt_path, out, opts=None, progress=None, log=None):
     opts = opts or ca.default_opts()
     with open(txt_path, encoding="utf-8", errors="replace") as f:
-        edl = parse_edl(f.read())
+        edl, skipped = parse_edl(f.read())
     if not edl:
         raise RuntimeError("no clip/time lines found in the .txt")
+    if skipped and log:
+        where = ", ".join(f"L{n}" for n, _ in skipped[:10]) + ("…" if len(skipped) > 10 else "")
+        log(f"WARNING: skipped {len(skipped)} unreadable line(s): {where}")
+    n_full = sum(1 for _, rs in edl for s, e in rs if e is None)
     segs = build_segments(folder, edl, opts.out_size, opts.fps)
     if log:
-        total = sum(e - s for _, rs in edl for s, e in rs)
-        log(f"timeline: {len(edl)} clips, {len(segs)} segments, {total/60:.1f} min total")
+        log(f"timeline: {len(edl)} clips, {len(segs)} segments ({n_full} full-clip), "
+            f"{sum(s['dur'] for s in segs)/60:.1f} min total")
     return ca.render_and_join(segs, out, opts.preset, opts.crf, fps=opts.fps, progress=progress, log=log)
 
 
